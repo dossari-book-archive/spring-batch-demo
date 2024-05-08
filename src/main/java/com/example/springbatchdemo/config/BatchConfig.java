@@ -9,10 +9,9 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
@@ -38,12 +37,11 @@ class BatchConfig {
             .build();
     }
 
-    @Bean
-    public CommandLineRunner commandLineRunner() {
-        return args -> {
-            var jobParameters = new JobParametersBuilder()
-                .toJobParameters();
-            jobLauncher.run(myJob(), jobParameters);
-        };
+    @Scheduled(cron = "${app.batch.cron}")
+    public void runJob() throws Exception {
+        var params = new JobParametersBuilder()
+            .addLong("jobId", System.currentTimeMillis())
+            .toJobParameters();
+        jobLauncher.run(myJob(), params);
     }
 }

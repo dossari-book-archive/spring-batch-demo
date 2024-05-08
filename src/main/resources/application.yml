@@ -5,3 +5,8 @@ spring:
     driverClassName: org.h2.Driver
     username: sa
     password:
+
+app:
+  batch:
+    cron: 0/10 * * * * *
+    # cron: "-" # 無効化する場合
