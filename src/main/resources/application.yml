@@ -13,3 +13,5 @@ app:
   batch:
     # cron: 0/10 * * * * *
     # cron: "-" # 無効化する場合
+  output:
+    file: 'out.csv'
