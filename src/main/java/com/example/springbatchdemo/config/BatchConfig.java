@@ -53,21 +53,24 @@ class BatchConfig {
     public JdbcCursorItemReader<Person> reader() {
         var reader = new JdbcCursorItemReader<Person>();
         reader.setDataSource(dataSource);
-        reader.setSql("SELECT id, name, age FROM person ORDER BY age, id");
+        reader.setSql("SELECT id, name, age, gender FROM person ORDER BY age, id");
         reader.setRowMapper(new BeanPropertyRowMapper<>(Person.class));
         return reader;
     }
 
     @Bean
     public FlatFileItemWriter<Person> writer() {
+        // fieldExtractor
+        var fieldExtractor = new BeanWrapperFieldExtractor<Person>();
+        fieldExtractor.setNames(new String[]{"id", "name", "age", "genderLabel"});
+        // lineAggregator
+        var lineAggregator = new DelimitedLineAggregator<Person>();
+        lineAggregator.setDelimiter(",");
+        lineAggregator.setFieldExtractor(fieldExtractor);
+        // writer
         var writer = new FlatFileItemWriter<Person>();
         writer.setResource(new FileSystemResource(outputFile));
-        writer.setLineAggregator(new DelimitedLineAggregator<>() {{
-            setDelimiter(",");
-            setFieldExtractor(new BeanWrapperFieldExtractor<>() {{
-                setNames(new String[]{"id", "name", "age"});
-            }});
-        }});
+        writer.setLineAggregator(lineAggregator);
         return writer;
     }
 

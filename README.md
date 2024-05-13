@@ -100,7 +100,8 @@ CREATE SEQUENCE BATCH_JOB_SEQ;
 CREATE TABLE Person (
     id BIGINT NOT NULL PRIMARY KEY,
     name VARCHAR(32) NOT NULL,
-    age INT NOT NULL
+    age INT NOT NULL,
+    gender INT NOT NULL
 );
 ```
 
@@ -113,7 +114,8 @@ function generateInsertSQL() {
     for (let i = 1; i <= numberOfRecords; i++) {
         const name = `Person${i}`;
         const age = Math.floor(Math.random() * 41) + 20;  // 20から60歳のランダムな年齢
-        const sql = `INSERT INTO Person (id, name, age) VALUES (${i}, '${name}', ${age});`;
+        const gender = Math.floor(Math.random() * 2) + 1;  // 1 or 2
+        const sql = `INSERT INTO Person (id, name, age, gender) VALUES (${i}, '${name}', ${age}, ${gender});`;
         sqlStatements.push(sql);
     }
 
