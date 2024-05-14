@@ -4,6 +4,7 @@ import com.example.springbatchdemo.entity.Person;
 import com.example.springbatchdemo.tasklet.HelloTasklet;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.Step;
@@ -17,15 +18,18 @@ import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.transaction.PlatformTransactionManager;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
-class BatchConfig {
+@ConditionalOnProperty(value = "app.batch.name", havingValue = "CursorItemReadBatch")
+class CursorItemReadBatchConfig {
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
@@ -97,6 +101,7 @@ class BatchConfig {
             var jobParameters = new JobParametersBuilder()
                 .addLong("jobId", System.currentTimeMillis())
                 .toJobParameters();
+            log.info("=========== start ===========");
             jobLauncher.run(exportPersonJob(), jobParameters);
         };
     }
