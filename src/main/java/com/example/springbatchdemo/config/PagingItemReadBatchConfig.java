@@ -62,13 +62,17 @@ class PagingItemReadBatchConfig {
     @Bean
     // @StepScope // readerに合わせて、念のためこちらも入れておく
     public FlatFileItemWriter<Person> writer() {
-        // fieldExtractor
-        var fieldExtractor = new BeanWrapperFieldExtractor<Person>();
-        fieldExtractor.setNames(new String[]{"id", "name", "age", "genderLabel"});
         // lineAggregator
         var lineAggregator = new DelimitedLineAggregator<Person>();
         lineAggregator.setDelimiter(",");
-        lineAggregator.setFieldExtractor(fieldExtractor);
+        lineAggregator.setFieldExtractor(person ->
+            new Object[]{
+                person.getId(),
+                person.getName(),
+                person.getAge(),
+                person.getGender()
+            }
+        );
         // writer
         var writer = new FlatFileItemWriter<Person>();
         writer.setResource(new FileSystemResource(outputFile));

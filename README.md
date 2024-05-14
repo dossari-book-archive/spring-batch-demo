@@ -101,7 +101,7 @@ CREATE TABLE Person (
     id BIGINT NOT NULL PRIMARY KEY,
     name VARCHAR(32) NOT NULL,
     age INT NOT NULL,
-    gender INT NOT NULL
+    gender INT NOT NULL -- 1:男性 2:女性
 );
 ```
 
